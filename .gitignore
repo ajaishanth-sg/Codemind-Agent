@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build and Packaging outputs
+dist/
+out/
+*.vsix
+
+# Local database / storage
+*.db
+*.sqlite
+*.sqlite3
+
+# External reference / subprojects
+kilocode-main/
+
+# Temporary and test artifacts
+test-executor.js
+test-executor.js.map
+.vscode-test/
+*.log
+
+# Environment variables & local secrets
+.env
+.env.*
+.DS_Store
+Thumbs.db

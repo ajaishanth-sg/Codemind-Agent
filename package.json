@@ -1,0 +1,75 @@
+{
+  "name": "codemind",
+  "displayName": "CodeMind - AI Engineering Intelligence Platform",
+  "description": "An AI system that builds a continuously updated model of a software system and reasons over its code, architecture, history, configuration, dependencies, runtime behavior, and changes.",
+  "version": "0.0.1",
+  "publisher": "ajaishanth-sg",
+  "author": "Ajaishanth SG",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajaishanth-sg/Codemind-Agent.git"
+  },
+  "icon": "media/logo.png",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codemind-sidebar",
+          "title": "CodeMind",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "codemind-sidebar": [
+        {
+          "type": "webview",
+          "id": "codemind.sidebarView",
+          "name": "Intelligence Dashboard",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "codemind.scanWorkspace",
+        "title": "CodeMind: Scan Workspace"
+      },
+      {
+        "command": "codemind.askGroq",
+        "title": "CodeMind: Ask Groq"
+      },
+      {
+        "command": "codemind.handleWebviewAsk",
+        "title": "CodeMind: Handle Webview Ask"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.90.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.1.2",
+    "groq-sdk": "^1.6.0",
+    "ts-morph": "^23.0.0"
+  }
+}
