@@ -1,75 +1,30 @@
 {
-  "name": "codemind",
-  "displayName": "CodeMind - AI Engineering Intelligence Platform",
-  "description": "An AI system that builds a continuously updated model of a software system and reasons over its code, architecture, history, configuration, dependencies, runtime behavior, and changes.",
-  "version": "0.0.1",
-  "publisher": "ajaishanth-sg",
-  "author": "Ajaishanth SG",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ajaishanth-sg/Codemind-Agent.git"
-  },
-  "icon": "media/logo.png",
-  "engines": {
-    "vscode": "^1.90.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "codemind-sidebar",
-          "title": "CodeMind",
-          "icon": "media/logo.svg"
-        }
-      ]
-    },
-    "views": {
-      "codemind-sidebar": [
-        {
-          "type": "webview",
-          "id": "codemind.sidebarView",
-          "name": "Intelligence Dashboard",
-          "icon": "media/logo.svg"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "codemind.scanWorkspace",
-        "title": "CodeMind: Scan Workspace"
-      },
-      {
-        "command": "codemind.askGroq",
-        "title": "CodeMind: Ask Groq"
-      },
-      {
-        "command": "codemind.handleWebviewAsk",
-        "title": "CodeMind: Handle Webview Ask"
-      }
-    ]
-  },
+  "name": "continue",
   "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "package": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
-    "test": "jest"
+    "tsc:watch": "concurrently -n gui,vscode,core,binary -c cyan,magenta,yellow,green \"npm run tsc:watch:gui\" \"npm run tsc:watch:vscode\" \"npm run tsc:watch:core\" \"npm run tsc:watch:binary\"",
+    "tsc:watch:gui": "tsc --project gui/tsconfig.json --watch --noEmit --pretty",
+    "tsc:watch:vscode": "tsc --project extensions/vscode/tsconfig.json --watch --noEmit --pretty",
+    "tsc:watch:core": "tsc --project core/tsconfig.json --watch --noEmit --pretty",
+    "tsc:watch:binary": "tsc --project binary/tsconfig.json --watch --noEmit --pretty",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^9.6.0",
-    "@types/node": "18.x",
-    "@types/vscode": "^1.90.0",
-    "esbuild": "^0.21.0",
-    "typescript": "^5.4.0"
+    "@typescript-eslint/parser": "^8.40.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^8",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
-    "better-sqlite3": "^11.1.2",
-    "groq-sdk": "^1.6.0",
-    "ts-morph": "^23.0.0"
+    "@ai-sdk/deepseek": "^2.0.20"
   }
 }
