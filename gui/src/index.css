@@ -99,49 +99,31 @@ body,
     sans-serif;
 }
 
-/* Chat Backdrop with Dynamic Background */
-.chat-interface-backdrop {
+/* Chat Backdrop with Spider-Man Subtle Watermark */
+.chat-page-container {
   position: relative;
   background-color: var(--vscode-editor-background, #18181b) !important;
 }
 
-.chat-interface-backdrop::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
-  background-image: url('/spiderman-transparent.png');
-  background-repeat: no-repeat;
-  background-position: center 60%;
-  background-size: min(370px, 72%);
-  opacity: 0.95;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Ensure chat messages and content sit cleanly above the backside image */
-.chat-interface-backdrop > * {
+.chat-interface-backdrop {
   position: relative;
-  z-index: 1;
+  background-color: transparent !important;
 }
 
-/* Spider-Man Crimson Scrollbar */
+/* Spider-Man Subtle Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e62429;
+  background: rgba(230, 36, 41, 0.4);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d11a1f;
+  background: rgba(230, 36, 41, 0.8);
   box-shadow: 0 0 6px rgba(230, 36, 41, 0.5);
 }
 

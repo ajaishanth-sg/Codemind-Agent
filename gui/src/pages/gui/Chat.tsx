@@ -58,6 +58,7 @@ import { getLocalStorage, setLocalStorage } from "../../util/localStorage";
 import { EmptyChatBody } from "./EmptyChatBody";
 import { ExploreDialogWatcher } from "./ExploreDialogWatcher";
 import { useAutoScroll } from "./useAutoScroll";
+import spidermanWatermark from "../../assets/spiderman-transparent.png";
 
 // Helper function to find the index of the latest conversation summary
 function findLatestSummaryIndex(history: ChatHistoryItem[]): number {
@@ -381,12 +382,24 @@ export function Chat() {
   const showScrollbar = showChatScrollbar ?? window.innerHeight > 5000;
 
   return (
-    <div className="flex h-full min-h-0 flex-col justify-between overflow-hidden">
+    <div className="chat-page-container relative flex h-full min-h-0 flex-col justify-between overflow-hidden">
+      {/* Spider-Man Subtle Watermark */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.08] select-none"
+        aria-hidden="true"
+      >
+        <img
+          src={spidermanWatermark}
+          alt=""
+          className="max-h-[62%] max-w-[62%] object-contain select-none pointer-events-none filter drop-shadow-sm"
+        />
+      </div>
+
       {!!showSessionTabs && !isInEdit && <TabBar ref={tabsRef} />}
       {widget}
 
       <div
-        className={`chat-interface-backdrop flex min-h-0 flex-1 flex-col overflow-y-auto ${showScrollbar ? "thin-scrollbar" : "no-scrollbar"}`}
+        className={`chat-interface-backdrop relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto ${showScrollbar ? "thin-scrollbar" : "no-scrollbar"}`}
       >
         <DeprecationBanner dismissable={true} />
         {highlights}
@@ -424,7 +437,7 @@ export function Chat() {
         )}
       </div>
 
-      <div className={"relative shrink-0 px-2 pt-2 pb-6 mb-2"}>
+      <div className={"relative z-10 shrink-0 px-2 pt-2 pb-6 mb-2"}>
         <ContinueInputBox
           isMainInput
           isLastUserInput={false}
