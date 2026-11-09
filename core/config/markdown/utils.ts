@@ -6,7 +6,7 @@ import { joinPathsToUri } from "../../util/uri";
 
 function createRelativeRuleFilePathParts(ruleName: string): string[] {
   const safeRuleName = sanitizeRuleName(ruleName);
-  return [".continue", "rules", `${safeRuleName}.${RULE_FILE_EXTENSION}`];
+  return [".codemind", "rules", `${safeRuleName}.${RULE_FILE_EXTENSION}`];
 }
 
 export function createRelativeRuleFilePath(ruleName: string): string {

@@ -2,25 +2,23 @@
   "name": "continue",
   "icon": "media/icon.png",
   "author": "Continue Dev, Inc",
-  "version": "1.3.47",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/continuedev/continue"
+    "url": "https://github.com/ajaishanth-sg/Codemind-Agent"
   },
   "extensionKind": [
     "ui",
     "workspace"
   ],
   "bugs": {
-    "url": "https://github.com/continuedev/continue/issues",
-    "email": "nate@continue.dev"
+    "url": "https://github.com/ajaishanth-sg/Codemind-Agent/issues"
   },
-  "homepage": "https://continue.dev",
-  "qna": "https://github.com/continuedev/continue/issues/new/choose",
+  "homepage": "https://github.com/ajaishanth-sg/Codemind-Agent",
   "license": "Apache-2.0",
-  "displayName": "Continue - open-source AI code agent",
+  "displayName": "Codemind - AI Code Agent",
   "pricing": "Free",
-  "description": "The leading open-source AI code agent",
+  "description": "Codemind: Autonomous AI Coding Agent",
   "publisher": "Continue",
   "engines": {
     "vscode": "^1.70.0",
@@ -597,14 +595,14 @@
       "activitybar": [
         {
           "id": "continue",
-          "title": "Continue",
+          "title": "Codemind",
           "icon": "media/sidebar-icon.png"
         }
       ],
       "panel": [
         {
           "id": "continueConsole",
-          "title": "Continue Console",
+          "title": "Codemind Console",
           "icon": "$(window)"
         }
       ]
@@ -614,7 +612,7 @@
         {
           "type": "webview",
           "id": "continue.continueGUIView",
-          "name": "Continue",
+          "name": "Codemind",
           "icon": "media/sidebar-icon.png",
           "visibility": "visible"
         }
@@ -623,7 +621,7 @@
         {
           "type": "webview",
           "id": "continue.continueConsoleView",
-          "name": "Continue Console",
+          "name": "Codemind Console",
           "icon": "$(window)",
           "visibility": "visible",
           "when": "config.continue.enableConsole"
@@ -632,7 +630,7 @@
     },
     "jsonValidation": [
       {
-        "fileMatch": "**/.continue*/config.json",
+        "fileMatch": "**/{.codemind*,.continue*}/config.json",
         "url": "./config_schema.json"
       },
       {

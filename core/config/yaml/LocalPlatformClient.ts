@@ -56,25 +56,28 @@ export class LocalPlatformClient implements PlatformClient {
     try {
       const workspaceDirs = await this.ide.getWorkspaceDirs();
       for (const folder of workspaceDirs) {
-        const envFilePath = joinPathsToUri(
-          folder,
-          insideContinue ? ".continue" : "",
-          ".env",
-        );
-        try {
-          const fileExists = await this.ide.fileExists(envFilePath);
-          if (fileExists) {
-            const envContent = await this.ide.readFile(envFilePath);
-            const env = dotenv.parse(envContent);
-            if (fqsn.secretName in env) {
-              return env[fqsn.secretName];
-            }
-          }
-        } catch (error) {
-          console.warn(
-            `Error reading workspace .env file at ${envFilePath}: ${error instanceof Error ? error.message : String(error)}`,
+        const envDirs = insideContinue ? [".codemind", ".continue"] : [""];
+        for (const envDir of envDirs) {
+          const envFilePath = joinPathsToUri(
+            folder,
+            envDir,
+            ".env",
           );
-          // Continue to next workspace folder
+          try {
+            const fileExists = await this.ide.fileExists(envFilePath);
+            if (fileExists) {
+              const envContent = await this.ide.readFile(envFilePath);
+              const env = dotenv.parse(envContent);
+              if (fqsn.secretName in env) {
+                return env[fqsn.secretName];
+              }
+            }
+          } catch (error) {
+            console.warn(
+              `Error reading workspace .env file at ${envFilePath}: ${error instanceof Error ? error.message : String(error)}`,
+            );
+            // Continue to next
+          }
         }
       }
 

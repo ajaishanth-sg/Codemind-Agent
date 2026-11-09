@@ -24,15 +24,58 @@ export function setConfigFilePermissions(filePath: string): void {
   }
 }
 
+function copyFolderSync(from: string, to: string) {
+  if (!fs.existsSync(from)) return;
+  if (!fs.existsSync(to)) {
+    fs.mkdirSync(to, { recursive: true });
+  }
+  const entries = fs.readdirSync(from, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(from, entry.name);
+    const destPath = path.join(to, entry.name);
+    if (entry.isDirectory()) {
+      copyFolderSync(srcPath, destPath);
+    } else if (entry.isFile()) {
+      if (!fs.existsSync(destPath)) {
+        try {
+          fs.copyFileSync(srcPath, destPath);
+        } catch (e) {
+          console.warn(`Failed to copy ${srcPath} to ${destPath}:`, e);
+        }
+      }
+    }
+  }
+}
+
 const CONTINUE_GLOBAL_DIR = (() => {
-  const configPath = process.env.CONTINUE_GLOBAL_DIR;
+  const configPath =
+    process.env.CODEMIND_GLOBAL_DIR || process.env.CONTINUE_GLOBAL_DIR;
   if (configPath) {
     // Convert relative path to absolute paths based on current working directory
     return path.isAbsolute(configPath)
       ? configPath
       : path.resolve(process.cwd(), configPath);
   }
-  return path.join(os.homedir(), ".continue");
+
+  const codemindDir = path.join(os.homedir(), ".codemind");
+  const continueDir = path.join(os.homedir(), ".continue");
+
+  // Auto-migrate from ~/.continue if ~/.codemind does not exist yet
+  if (!fs.existsSync(codemindDir)) {
+    if (fs.existsSync(continueDir)) {
+      try {
+        copyFolderSync(continueDir, codemindDir);
+      } catch (err) {
+        console.warn("Failed to auto-migrate ~/.continue to ~/.codemind:", err);
+      }
+    } else {
+      try {
+        fs.mkdirSync(codemindDir, { recursive: true });
+      } catch {}
+    }
+  }
+
+  return fs.existsSync(codemindDir) ? codemindDir : continueDir;
 })();
 
 // export const DEFAULT_CONFIG_TS_CONTENTS = `import { Config } from "./types"\n\nexport function modifyConfig(config: Config): Config {
@@ -56,12 +99,20 @@ export function getContinueUtilsPath(): string {
 }
 
 export function getGlobalContinueIgnorePath(): string {
+  const codemindIgnorePath = path.join(
+    getContinueGlobalPath(),
+    ".codemindignore",
+  );
+  if (fs.existsSync(codemindIgnorePath)) {
+    return codemindIgnorePath;
+  }
   const continueIgnorePath = path.join(
     getContinueGlobalPath(),
     ".continueignore",
   );
   if (!fs.existsSync(continueIgnorePath)) {
-    fs.writeFileSync(continueIgnorePath, "");
+    fs.writeFileSync(codemindIgnorePath, "");
+    return codemindIgnorePath;
   }
   return continueIgnorePath;
 }
