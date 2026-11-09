@@ -67,42 +67,35 @@ export function getRightViewColumn(): vscode.ViewColumn {
   return column;
 }
 
-let showTextDocumentInProcess = false;
-
 export function openEditorAndRevealRange(
   uri: vscode.Uri,
   range?: vscode.Range,
   viewColumn?: vscode.ViewColumn,
-  preview?: boolean,
+  preview: boolean = false,
 ): Promise<vscode.TextEditor> {
-  return new Promise((resolve, _) => {
-    vscode.workspace.openTextDocument(uri).then(async (doc) => {
-      try {
-        // An error is thrown mysteriously if you open two documents in parallel, hence this
-        while (showTextDocumentInProcess) {
-          await new Promise((resolve) => {
-            setInterval(() => {
-              resolve(null);
-            }, 200);
+  return new Promise((resolve) => {
+    vscode.workspace.openTextDocument(uri).then(
+      async (doc) => {
+        try {
+          const editor = await vscode.window.showTextDocument(doc, {
+            viewColumn:
+              getViewColumnOfFile(uri) || viewColumn || vscode.ViewColumn.One,
+            preview: false,
           });
+          if (range) {
+            editor.revealRange(range);
+          }
+          resolve(editor);
+        } catch (err) {
+          console.warn("Error showing text document:", err);
+          resolve(undefined as any);
         }
-        showTextDocumentInProcess = true;
-        vscode.window
-          .showTextDocument(doc, {
-            viewColumn: getViewColumnOfFile(uri) || viewColumn,
-            preview,
-          })
-          .then((editor) => {
-            if (range) {
-              editor.revealRange(range);
-            }
-            resolve(editor);
-            showTextDocumentInProcess = false;
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    });
+      },
+      (err) => {
+        console.warn("Error opening text document:", err);
+        resolve(undefined as any);
+      },
+    );
   });
 }
 

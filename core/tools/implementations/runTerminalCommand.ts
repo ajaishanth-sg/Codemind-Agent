@@ -152,7 +152,13 @@ export const runTerminalCommandImpl: ToolImpl = async (args, extras) => {
 
   // Execute directly in the editor integrated terminal so it shows live in the user's terminal
   if (extras.ide?.runCommand) {
-    await extras.ide.runCommand(command);
+    const isDevServerCommand =
+      /npm\s+(run\s+)?(dev|start)|vite|serve|python.*http\.server/i.test(command);
+
+    await extras.ide.runCommand(command, {
+      reuseTerminal: !isDevServerCommand,
+      terminalName: isDevServerCommand ? "Codemind Server" : "Codemind",
+    });
 
     if (!waitForCompletion) {
       await new Promise((r) => setTimeout(r, 1000));
@@ -209,8 +215,11 @@ export const runTerminalCommandImpl: ToolImpl = async (args, extras) => {
             });
           }
 
-          // Check if dev server is detected
-          if (/http:\/\/(localhost|127\.0\.0\.1):\d+/i.test(terminalOutput)) {
+          // Check if dev server is detected ONLY for dev server commands!
+          if (
+            isDevServerCommand &&
+            /http:\/\/(localhost|127\.0\.0\.1):\d+/i.test(terminalOutput)
+          ) {
             return [
               {
                 name: "Terminal",

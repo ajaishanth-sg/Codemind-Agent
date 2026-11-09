@@ -270,6 +270,13 @@ class VsCodeIde implements IDE {
   }
 
   async getTerminalContents(): Promise<string> {
+    // Focus the Codemind terminal before reading contents so we don't read from user's other terminals
+    const codemindTerminal = vscode.window.terminals.find(
+      (t) => t.name === "Codemind Server" || t.name === "Codemind",
+    );
+    if (codemindTerminal) {
+      codemindTerminal.show(false);
+    }
     return await this.ideUtils.getTerminalContents(-1);
   }
 
@@ -306,6 +313,10 @@ class VsCodeIde implements IDE {
       uri,
       Buffer.from(contents),
     );
+    // Reveal and open in editor so the user sees the written file and code in their IDE!
+    try {
+      await this.ideUtils.openFile(uri);
+    } catch {}
   }
 
   async removeFile(fileUri: string): Promise<void> {
@@ -344,21 +355,22 @@ class VsCodeIde implements IDE {
     command: string,
     options: TerminalOptions = { reuseTerminal: true },
   ): Promise<void> {
+    const isServer =
+      /npm\s+(run\s+)?(dev|start)|vite|serve|python.*http\.server/i.test(command);
+    const targetName =
+      options.terminalName || (isServer ? "Codemind Server" : "Codemind");
+
     let terminal: vscode.Terminal | undefined;
-    if (vscode.window.terminals.length && options.reuseTerminal) {
-      if (options.terminalName) {
-        terminal = vscode.window.terminals.find(
-          (t) => t?.name === options.terminalName,
-        );
-      } else {
-        terminal = vscode.window.activeTerminal ?? vscode.window.terminals[0];
-      }
+    if (vscode.window.terminals.length && options.reuseTerminal && !isServer) {
+      terminal = vscode.window.terminals.find(
+        (t) => t?.name === targetName,
+      );
     }
 
     if (!terminal) {
-      terminal = vscode.window.createTerminal(options?.terminalName);
+      terminal = vscode.window.createTerminal({ name: targetName });
     }
-    terminal.show();
+    terminal.show(false);
     terminal.sendText(command, true);
   }
 
